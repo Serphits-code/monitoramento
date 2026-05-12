@@ -4,7 +4,7 @@ App Kotlin nativo de teste para enviar GPS ao servidor de monitoramento.
 
 ## O que faz
 
-- Coleta localizacao em foreground service a cada 30 segundos.
+- Coleta localizacao em foreground service a cada 5 segundos ou cerca de 5 metros percorridos.
 - Salva todo ponto primeiro no SQLite local.
 - Envia lotes para `POST /api/monitoramento/gps/batch`.
 - Mantem pontos offline e apaga somente apos resposta OK do servidor.

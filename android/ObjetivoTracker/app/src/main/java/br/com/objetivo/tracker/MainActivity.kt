@@ -74,7 +74,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(18), dp(22), dp(18), dp(18))
             addView(TextView(context).apply { text = "Objetivo Tracker"; textSize = 22f })
-            addView(TextView(context).apply { text = "Envio GPS a cada 30 segundos com fila offline."; textSize = 13f })
+            addView(TextView(context).apply { text = "Salva a rota real em background e sincroniza pontos offline depois."; textSize = 13f })
             addView(serverInput, fieldParams())
             addView(tokenInput, fieldParams())
             addView(tecnicoInput, fieldParams())

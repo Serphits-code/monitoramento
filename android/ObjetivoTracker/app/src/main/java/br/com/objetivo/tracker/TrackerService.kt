@@ -69,7 +69,7 @@ class TrackerService : Service() {
     private fun startTracking() {
         prefs.trackingEnabled = true
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, notification("Enviando GPS a cada 30 segundos"))
+        startForeground(NOTIFICATION_ID, notification("Salvando rota real em background"))
 
         if (!hasLocationPermission()) {
             stopSelf()
@@ -77,7 +77,9 @@ class TrackerService : Service() {
         }
 
         val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, LOCATION_INTERVAL_MS)
-            .setMinUpdateIntervalMillis(LOCATION_INTERVAL_MS)
+            .setMinUpdateIntervalMillis(FASTEST_LOCATION_INTERVAL_MS)
+            .setMinUpdateDistanceMeters(MIN_DISTANCE_METERS)
+            .setMaxUpdateDelayMillis(LOCATION_INTERVAL_MS)
             .setWaitForAccurateLocation(false)
             .build()
         fused.requestLocationUpdates(request, locationCallback, Looper.getMainLooper())
@@ -104,13 +106,16 @@ class TrackerService : Service() {
 
     private fun syncPending() {
         if (syncing || !hasNetwork()) return
-        val batch = store.listPending(50)
-        if (batch.isEmpty()) return
         syncing = true
         thread(name = "gps-sync") {
             try {
-                val ok = SyncClient.sendBatch(prefs.serverUrl, prefs.gpsToken, prefs.technicianId, prefs.deviceId, batch)
-                if (ok) store.delete(batch.map { it.id })
+                while (hasNetwork()) {
+                    val batch = store.listPending(SYNC_BATCH_SIZE)
+                    if (batch.isEmpty()) break
+                    val ok = SyncClient.sendBatch(prefs.serverUrl, prefs.gpsToken, prefs.technicianId, prefs.deviceId, batch)
+                    if (!ok) break
+                    store.delete(batch.map { it.id })
+                }
             } finally {
                 syncing = false
             }
@@ -148,7 +153,10 @@ class TrackerService : Service() {
         const val ACTION_STOP = "br.com.objetivo.tracker.STOP"
         private const val CHANNEL_ID = "objetivo_tracker_location"
         private const val NOTIFICATION_ID = 6777
-        private const val LOCATION_INTERVAL_MS = 30_000L
-        private const val SYNC_INTERVAL_MS = 30_000L
+        private const val LOCATION_INTERVAL_MS = 5_000L
+        private const val FASTEST_LOCATION_INTERVAL_MS = 2_000L
+        private const val SYNC_INTERVAL_MS = 10_000L
+        private const val MIN_DISTANCE_METERS = 5f
+        private const val SYNC_BATCH_SIZE = 100
     }
 }

@@ -7,15 +7,15 @@ class TrackerPrefs(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("objetivo_tracker", Context.MODE_PRIVATE)
 
     var serverUrl: String
-        get() = prefs.getString("server_url", "") ?: ""
+        get() = prefs.getString("server_url", BuildConfig.DEFAULT_SERVER_URL) ?: BuildConfig.DEFAULT_SERVER_URL
         set(value) = prefs.edit().putString("server_url", value.trim().trimEnd('/')).apply()
 
     var gpsToken: String
-        get() = prefs.getString("gps_token", "") ?: ""
+        get() = prefs.getString("gps_token", BuildConfig.DEFAULT_GPS_TOKEN) ?: BuildConfig.DEFAULT_GPS_TOKEN
         set(value) = prefs.edit().putString("gps_token", value.trim()).apply()
 
     var technicianId: Int
-        get() = prefs.getInt("technician_id", 1)
+        get() = prefs.getInt("technician_id", BuildConfig.DEFAULT_TECHNICIAN_ID)
         set(value) = prefs.edit().putInt("technician_id", value).apply()
 
     var trackingEnabled: Boolean

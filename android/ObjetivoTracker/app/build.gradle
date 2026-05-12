@@ -3,6 +3,22 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
+}
+
+def buildConfigString = { key, fallback ->
+    def value = localProps.getProperty(key, fallback) ?: ''
+    return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+}
+
+def buildConfigInt = { key, fallback ->
+    def value = localProps.getProperty(key, fallback.toString())
+    return value.isInteger() ? value : fallback.toString()
+}
+
 android {
     namespace 'br.com.objetivo.tracker'
     compileSdk 35
@@ -13,6 +29,13 @@ android {
         targetSdk 35
         versionCode 1
         versionName '1.0.0'
+        buildConfigField 'String', 'DEFAULT_SERVER_URL', buildConfigString('DEFAULT_SERVER_URL', '')
+        buildConfigField 'String', 'DEFAULT_GPS_TOKEN', buildConfigString('DEFAULT_GPS_TOKEN', '')
+        buildConfigField 'int', 'DEFAULT_TECHNICIAN_ID', buildConfigInt('DEFAULT_TECHNICIAN_ID', 1)
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     compileOptions {

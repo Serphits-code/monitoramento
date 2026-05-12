@@ -29,7 +29,7 @@ class LocationStore(context: Context) : SQLiteOpenHelper(context, "objetivo_trac
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = Unit
 
-    fun insert(location: Location, battery: Float?) {
+    fun insert(location: Location, battery: Float?, capturedAtMillis: Long = location.time.takeIf { it > 0 } ?: System.currentTimeMillis()) {
         val values = ContentValues().apply {
             put("client_point_id", UUID.randomUUID().toString())
             put("latitude", location.latitude)
@@ -38,7 +38,7 @@ class LocationStore(context: Context) : SQLiteOpenHelper(context, "objetivo_trac
             put("speed", if (location.hasSpeed()) location.speed else null)
             put("bearing", if (location.hasBearing()) location.bearing else null)
             put("battery", battery)
-            put("captured_at", Instant.ofEpochMilli(location.time.takeIf { it > 0 } ?: System.currentTimeMillis()).toString())
+            put("captured_at", Instant.ofEpochMilli(capturedAtMillis).toString())
         }
         writableDatabase.insertWithOnConflict("pending_locations", null, values, SQLiteDatabase.CONFLICT_IGNORE)
     }

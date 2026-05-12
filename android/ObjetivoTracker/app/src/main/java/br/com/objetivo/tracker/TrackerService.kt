@@ -32,9 +32,11 @@ class TrackerService : Service() {
     private lateinit var fused: FusedLocationProviderClient
     private val handler = Handler(Looper.getMainLooper())
     private var syncing = false
+    private var lastStoredAtMs = 0L
 
     private val syncRunnable = object : Runnable {
         override fun run() {
+            captureHeartbeatIfNeeded()
             syncPending()
             handler.postDelayed(this, SYNC_INTERVAL_MS)
         }
@@ -69,7 +71,7 @@ class TrackerService : Service() {
     private fun startTracking() {
         prefs.trackingEnabled = true
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, notification("Salvando rota real em background"))
+        startForeground(NOTIFICATION_ID, notification("Salvando rota real e enviando heartbeat"))
 
         if (!hasLocationPermission()) {
             stopSelf()
@@ -100,8 +102,26 @@ class TrackerService : Service() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun saveLocation(location: Location) {
-        store.insert(location, batteryPercent())
+    private fun saveLocation(location: Location, captureNow: Boolean = false) {
+        val capturedAtMillis = if (captureNow) System.currentTimeMillis() else (location.time.takeIf { it > 0 } ?: System.currentTimeMillis())
+        store.insert(location, batteryPercent(), capturedAtMillis)
+        lastStoredAtMs = System.currentTimeMillis()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun captureHeartbeatIfNeeded() {
+        val now = System.currentTimeMillis()
+        if (now - lastStoredAtMs < HEARTBEAT_INTERVAL_MS) return
+        fused.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    saveLocation(location, captureNow = true)
+                    syncPending()
+                }
+            }
+            .addOnFailureListener {
+                // Sem ultima localizacao disponivel; aguardamos o proximo callback do GPS.
+            }
     }
 
     private fun syncPending() {
@@ -156,6 +176,7 @@ class TrackerService : Service() {
         private const val LOCATION_INTERVAL_MS = 5_000L
         private const val FASTEST_LOCATION_INTERVAL_MS = 2_000L
         private const val SYNC_INTERVAL_MS = 10_000L
+        private const val HEARTBEAT_INTERVAL_MS = 60_000L
         private const val MIN_DISTANCE_METERS = 5f
         private const val SYNC_BATCH_SIZE = 100
     }

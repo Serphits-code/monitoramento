@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoramento GPS — Objetivo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/monitoramento.css" />
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <div>
+        <h2>Monitoramento</h2>
+        <div class="header-links">
+          <a href="/">Cobertura</a>
+          <a href="/rotas.html">Rotas OS</a>
+        </div>
+      </div>
+      <button id="btn-logout" class="icon-btn" title="Sair">Sair</button>
+    </div>
+
+    <div class="sidebar-section controls-stack">
+      <label for="data-monitoramento">Data</label>
+      <input type="date" id="data-monitoramento">
+
+      <label for="tecnico-select">Tecnico</label>
+      <select id="tecnico-select">
+        <option value="">Todos</option>
+      </select>
+
+      <label class="switch-row">
+        <span>Ao vivo</span>
+        <span class="toggle-switch"><input type="checkbox" id="modo-live" checked><span class="toggle-track"></span></span>
+      </label>
+
+      <div class="button-row">
+        <button id="btn-refresh" class="btn">Atualizar</button>
+        <button id="btn-fit" class="btn btn-secondary">Enquadrar</button>
+      </div>
+      <div id="status" class="status-bar">Carregando...</div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Tecnicos</h3>
+      <div id="tecnicos-container"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Camadas IXC</h3>
+      <label for="projeto-select">Projeto para cabos</label>
+      <select id="projeto-select">
+        <option value="">Selecione</option>
+      </select>
+
+      <div class="layer-group">
+        <label class="layer-toggle" data-layer="caixasFtth">
+          <span class="dot" style="background:#3498db"></span>
+          <span class="layer-name">CTOs</span>
+          <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+        </label>
+        <label class="layer-toggle" data-layer="logins">
+          <span class="dot" style="background:#16a085"></span>
+          <span class="layer-name">Logins</span>
+          <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+        </label>
+        <label class="layer-toggle" data-layer="onus">
+          <span class="dot" style="background:#8e44ad"></span>
+          <span class="layer-name">ONUs</span>
+          <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+        </label>
+        <label class="layer-toggle" data-layer="pops">
+          <span class="dot" style="background:#e67e22"></span>
+          <span class="layer-name">POPs</span>
+          <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+        </label>
+        <label class="layer-toggle" data-layer="elementos">
+          <span class="dot" style="background:#5dade2"></span>
+          <span class="layer-name">Cabos e elementos</span>
+          <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <div id="map"></div>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <span id="loading-text">Carregando dados...</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/monitoramento.js"></script>
+</body>
+</html>

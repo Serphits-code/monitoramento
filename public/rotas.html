@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotas de Atendimento — OS</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/rotas.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <h2>🚗 Rotas OS</h2>
+      <div class="header-actions">
+        <a href="/" class="link-cobertura">Mapa cobertura</a>
+        <a href="/monitoramento" class="link-cobertura">Monitoramento</a>
+      </div>
+    </div>
+
+    <!-- Tab: Rotas -->
+    <div class="sidebar-panel active" id="tab-rotas">
+      <!-- Controles -->
+      <div class="sidebar-section">
+        <div class="controls-row">
+          <input type="date" id="data-servico" />
+        </div>
+        <button id="btn-geocode-auto" class="btn btn-secondary">📍 Geocodificar serviços</button>
+        <button id="btn-otimizar-todos" class="btn btn-success">🚀 Otimizar todas as rotas</button>
+        <button id="btn-buscar-ixc" class="btn btn-secondary">🔄 Buscar OS no IXC</button>
+      </div>
+
+      <!-- Técnicos / Serviços -->
+      <div class="sidebar-section" id="tecnicos-container">
+        <h3>Técnicos</h3>
+        <!-- Gerado dinamicamente -->
+      </div>
+
+      <!-- Status -->
+      <div class="sidebar-section">
+        <div id="status" class="status-bar">Carregando...</div>
+      </div>
+    </div>
+
+    <!-- Tab: Camadas -->
+    <div class="sidebar-panel" id="tab-camadas">
+      <div class="sidebar-section">
+        <h3>Camadas do mapa de cobertura</h3>
+
+        <div class="layer-group">
+          <h4>Rede</h4>
+          <label class="layer-toggle" data-layer="caixasFtth">
+            <span class="dot" style="background:#3498db"></span>
+            <span class="layer-name">Caixa de atendimento (CTO)</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="pops">
+            <span class="dot" style="background:#e67e22"></span>
+            <span class="layer-name">POP</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+
+        <div class="layer-group">
+          <h4>Clientes</h4>
+          <label class="layer-toggle" data-layer="logins">
+            <span class="dot" style="background:#1abc9c"></span>
+            <span class="layer-name">Logins</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="onus">
+            <span class="dot" style="background:#9b59b6"></span>
+            <span class="layer-name">ONUs</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+
+        <div class="layer-group">
+          <h4>FiberDocs</h4>
+          <label class="layer-toggle" data-layer="cabos">
+            <span class="dot" style="background:#3498db"></span>
+            <span class="layer-name">Cabos</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="caixaEmenda">
+            <span class="dot" style="background:#e74c3c"></span>
+            <span class="layer-name">Caixa de emenda</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="postes">
+            <span class="dot" style="background:#95a5a6"></span>
+            <span class="layer-name">Postes</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <button id="btn-load-camadas" class="btn btn-secondary">🔄 Carregar camadas de cobertura</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Floating tab strip -->
+  <div class="sidebar-tabs">
+    <button class="sidebar-tab active" data-tab="rotas" title="Rotas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <path d="M3 12h4l3 8 4-16 3 8h4"/>
+      </svg>
+    </button>
+    <button class="sidebar-tab" data-tab="camadas" title="Camadas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Loading overlay -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <span id="loading-text">Carregando dados...</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/rotas.js"></script>
+</body>
+</html>

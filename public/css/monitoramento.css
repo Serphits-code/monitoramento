@@ -1,0 +1,217 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #101318;
+}
+
+#sidebar {
+  width: 340px;
+  min-width: 340px;
+  background: #1a1d23;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  padding: 16px;
+  background: #12141a;
+  border-bottom: 1px solid #2a2d35;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sidebar-header h2 { font-size: 18px; font-weight: 650; letter-spacing: 0; }
+.header-links { display: flex; gap: 10px; margin-top: 7px; }
+.header-links a { color: #75b7ff; text-decoration: none; font-size: 12px; }
+.header-links a:hover { text-decoration: underline; }
+
+.sidebar-section { padding: 13px 16px; border-bottom: 1px solid #2a2d35; }
+.sidebar-section h3 {
+  font-size: 12px;
+  color: #aeb6c3;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-section label:not(.switch-row):not(.layer-toggle) {
+  display: block;
+  color: #8d98aa;
+  font-size: 11px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.controls-stack { display: grid; gap: 9px; }
+input[type="date"], select {
+  width: 100%;
+  padding: 8px 10px;
+  background: #2a2d35;
+  color: #e0e0e0;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 12px;
+}
+input[type="date"]:focus, select:focus { outline: none; border-color: #3498db; }
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #cfd7e3;
+  font-size: 13px;
+}
+
+.button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn, .icon-btn {
+  padding: 9px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #2f80ed;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-secondary, .icon-btn { background: #303744; color: #dfe7f1; }
+.btn:hover, .icon-btn:hover { filter: brightness(1.08); }
+.icon-btn { padding: 7px 9px; }
+
+.status-bar {
+  padding: 8px 10px;
+  background: #22252d;
+  border-left: 3px solid #3498db;
+  color: #b8c2d0;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.tecnico-card {
+  background: #22252d;
+  border-left: 4px solid #888;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.tecnico-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  align-items: center;
+}
+.tecnico-name { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.tecnico-name span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-pill {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: #3a3d45;
+  color: #cdd5df;
+  flex-shrink: 0;
+}
+.status-pill.online { background: rgba(46, 204, 113, 0.16); color: #5ee58e; }
+.status-pill.parado { background: rgba(241, 196, 15, 0.16); color: #f7d65b; }
+.status-pill.offline { background: rgba(231, 76, 60, 0.16); color: #ff8b7f; }
+.tecnico-body { padding: 0 12px 11px; }
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.metric {
+  background: #1b1f27;
+  border: 1px solid #2c313c;
+  border-radius: 6px;
+  padding: 7px;
+}
+.metric label { display: block; color: #7d8796; font-size: 10px; margin-bottom: 3px; text-transform: uppercase; }
+.metric strong { font-size: 12px; color: #edf2f7; font-weight: 700; }
+.tecnico-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 8px; }
+
+.layer-group { margin-top: 12px; }
+.layer-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  color: #cfd7e3;
+  cursor: pointer;
+}
+.layer-name { flex: 1; font-size: 13px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+.toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; margin-left: auto; }
+.toggle-switch input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.toggle-track { position: absolute; inset: 0; border-radius: 20px; background: #3a3d45; transition: background 0.2s; }
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b95a5;
+  transition: transform 0.2s, background 0.2s;
+}
+.toggle-switch input:checked + .toggle-track { background: #1f4c74; }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); background: #5fb4ff; }
+
+#map { flex: 1; height: 100vh; background: #0e1116; }
+
+.tech-marker, .stop-marker, .endpoint-marker {
+  border-radius: 50%;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.78), 0 8px 18px rgba(0,0,0,0.35);
+}
+.tech-marker { width: 28px; height: 28px; }
+.tech-marker.parado { box-shadow: 0 0 0 4px rgba(247,214,91,0.65), 0 8px 18px rgba(0,0,0,0.35); }
+.stop-marker { width: 24px; height: 24px; background: #f1c40f; color: #12141a; }
+.endpoint-marker { width: 22px; height: 22px; background: #303744; }
+
+.popup-table { border-collapse: collapse; min-width: 220px; }
+.popup-table td { padding: 4px 6px; border-bottom: 1px solid #e6e9ef; font-size: 12px; }
+.popup-table td:first-child { font-weight: 700; color: #344055; }
+
+.loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(16,19,24,0.58);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fff;
+  font-weight: 700;
+}
+.loading.hidden { display: none; }
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 760px) {
+  body { display: block; overflow: auto; }
+  #sidebar { width: 100%; min-width: 0; height: auto; max-height: 48vh; }
+  #map { height: 52vh; }
+}

@@ -1,0 +1,22 @@
+node_modules/
+.env
+*.log
+npm-debug.log*
+
+# Banco local e arquivos gerados pelo SQLite
+data/*.db
+data/*.db-*
+data/*.sqlite
+data/*.sqlite-*
+
+# Builds Android e arquivos locais de SDK/IDE
+android/**/.gradle/
+android/**/build/
+android/**/local.properties
+android/**/*.apk
+android/**/*.aab
+android/**/*.jks
+android/**/*.keystore
+
+# VS Code/local
+.vscode/

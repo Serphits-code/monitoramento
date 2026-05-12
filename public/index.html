@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa FiberDocs — IXC</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <h2>🗺️ FiberMap</h2>
+      <div class="header-actions">
+        <a href="/monitoramento">Monitoramento</a>
+        <a href="/rotas.html">Rotas OS</a>
+      </div>
+    </div>
+
+    <!-- Tab: Global -->
+    <div class="sidebar-panel active" id="tab-global">
+      <!-- Projeto selector -->
+      <div class="sidebar-section">
+        <label>Projetos</label>
+        <div id="projeto-multiselect" class="multiselect">
+          <div class="multiselect-tags" id="projeto-tags">
+            <input type="text" id="projeto-search" class="multiselect-input" placeholder="Selecione projetos..." autocomplete="off" />
+          </div>
+          <div class="multiselect-dropdown hidden" id="projeto-dropdown"></div>
+        </div>
+      </div>
+
+      <!-- Camadas -->
+      <div class="sidebar-section">
+        <h3>Camadas</h3>
+
+        <div class="layer-group">
+          <h4>FiberDocs (Elementos)</h4>
+          <label class="layer-toggle" data-layer="caixaEmenda">
+            <span class="dot" style="background:#e74c3c"></span>
+            <span class="layer-name">Caixa de emenda</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="cabos">
+            <span class="dot" style="background:#3498db"></span>
+            <span class="layer-name">Cabos</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="postes">
+            <span class="dot" style="background:#95a5a6"></span>
+            <span class="layer-name">Postes</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="caixaSubterranea">
+            <span class="dot" style="background:#8e44ad"></span>
+            <span class="layer-name">Caixas subterrâneas</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="outrosElementos">
+            <span class="dot" style="background:#f39c12"></span>
+            <span class="layer-name">Outros elementos</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+
+        <div class="layer-group">
+          <h4>Rede</h4>
+          <label class="layer-toggle" data-layer="caixasFtth">
+            <span class="dot" style="background:#3498db"></span>
+            <span class="layer-name">Caixa de atendimento (CTO)</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="pops">
+            <span class="dot" style="background:#e67e22"></span>
+            <span class="layer-name">POP</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+
+        <div class="layer-group">
+          <h4>Clientes</h4>
+          <label class="layer-toggle" data-layer="logins">
+            <span class="dot" style="background:#1abc9c"></span>
+            <span class="layer-name">Logins</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+          <label class="layer-toggle" data-layer="onus">
+            <span class="dot" style="background:#9b59b6"></span>
+            <span class="layer-name">ONUs</span>
+            <span class="toggle-switch"><input type="checkbox"><span class="toggle-track"></span></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="sidebar-section">
+        <button id="btn-refresh" class="btn">🔄 Atualizar dados</button>
+        <button id="btn-clear-cache" class="btn btn-secondary">🗑️ Limpar cache</button>
+      </div>
+
+      <!-- Status -->
+      <div class="sidebar-section">
+        <div id="status" class="status-bar">Pronto</div>
+      </div>
+    </div>
+
+    <!-- Tab: Logins -->
+    <div class="sidebar-panel" id="tab-logins">
+      <div class="sidebar-section">
+        <div class="filter-group">
+          <label for="filter-ativo">Status</label>
+          <select id="filter-ativo">
+            <option value="">Todos</option>
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-status">Status de acesso</label>
+          <select id="filter-status">
+            <option value="">Todos</option>
+            <option value="online">Online</option>
+            <option value="online_24h">Online (últimas 24h)</option>
+            <option value="offline">Offline</option>
+            <option value="offline_24h">Offline (últimas 24h)</option>
+            <option value="all">Online e Offline</option>
+            <option value="all_24h">Online e Offline (últimas 24h)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-autenticacao">Autenticação</label>
+          <select id="filter-autenticacao">
+            <option value="">Todos</option>
+            <option value="PPPoE">PPPoE</option>
+            <option value="Hotspot">Hotspot</option>
+            <option value="IP X MAC">IP X MAC</option>
+            <option value="VLan">VLan</option>
+            <option value="IPoE">IPoE</option>
+            <option value="Integração">Integração</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-transmissao">Tipo de conexão</label>
+          <select id="filter-transmissao">
+            <option value="">Todos</option>
+            <option value="Fibra">Fibra</option>
+            <option value="5.8">5.8</option>
+            <option value="2.4">2.4</option>
+            <option value="Cabo">Cabo</option>
+            <option value="ADSL">ADSL</option>
+            <option value="LTE">LTE</option>
+            <option value="Link Dedicado">Link Dedicado</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-interface">Interface / Conexão</label>
+          <select id="filter-interface"><option value="">Todas</option></select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-olt">OLT</label>
+          <select id="filter-olt"><option value="">Todas</option></select>
+        </div>
+        <button id="btn-clear-filters" class="btn btn-secondary">✕ Limpar filtros</button>
+      </div>
+    </div>
+
+    <!-- Tab: Caixas de atendimento -->
+    <div class="sidebar-panel" id="tab-cto">
+      <div class="sidebar-section">
+        <div class="panel-title">Caixas de atendimento</div>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="filter-toggle-label">Exibir descrição</span>
+          <span class="toggle-switch"><input type="checkbox" id="cto-exibir-descricao"><span class="toggle-track"></span></span>
+        </label>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+          <span class="filter-toggle-label">Exibir caixas de atendimento conectadas a outros projetos</span>
+          <span class="toggle-switch"><input type="checkbox" id="cto-outros-projetos"><span class="toggle-track"></span></span>
+        </label>
+
+        <div class="filter-group">
+          <label for="cto-colorir">Colorir caixas de atendimento por</label>
+          <select id="cto-colorir">
+            <option value="padrao">Cor padrão do elemento</option>
+            <option value="status">Status</option>
+            <option value="portas">Portas disponíveis</option>
+            <option value="capacidade">Capacidade</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-status">Status</label>
+          <select id="cto-status">
+            <option value="">Todas</option>
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-portas">Portas disponíveis</label>
+          <select id="cto-portas">
+            <option value="">Todas</option>
+            <option value="0">Nenhuma porta disponível</option>
+            <option value="1-3">Uma a três portas disponíveis</option>
+            <option value="4-8">Quatro a oito portas disponíveis</option>
+            <option value="8+">Mais de oito portas disponíveis</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-capacidade">Capacidade</label>
+          <select id="cto-capacidade">
+            <option value="">Todas</option>
+            <option value="1-4">Até quatro portas</option>
+            <option value="5-8">Cinco a oito portas</option>
+            <option value="9-16">Nove a dezesseis portas</option>
+            <option value="16+">Mais de dezesseis portas</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-transmissor">Transmissor</label>
+          <input type="text" id="cto-transmissor" class="filter-input" placeholder="Buscar transmissor..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-interface-fibra">Interface fibra</label>
+          <input type="text" id="cto-interface-fibra" class="filter-input" placeholder="Buscar interface fibra..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-tecnologia">Tecnologia</label>
+          <input type="text" id="cto-tecnologia" class="filter-input" placeholder="Buscar tecnologia..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="cto-estilo">Estilo</label>
+          <input type="text" id="cto-estilo" class="filter-input" placeholder="Buscar estilo..." />
+        </div>
+
+        <button id="btn-clear-cto-filters" class="btn btn-secondary">✕ Limpar filtros</button>
+      </div>
+    </div>
+
+    <!-- TAB: CABOS -->
+    <div class="sidebar-panel" id="tab-cabos">
+      <div class="sidebar-section">
+        <div class="panel-title">Cabos</div>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          <span class="filter-toggle-label">Exibir direção dos cabos</span>
+          <span class="toggle-switch"><input type="checkbox" id="cabo-direcao"><span class="toggle-track"></span></span>
+        </label>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+          <span class="filter-toggle-label">Exibir cabos conectados<br>a outros projetos</span>
+          <span class="toggle-switch"><input type="checkbox" id="cabo-outros-projetos"><span class="toggle-track"></span></span>
+        </label>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <span class="filter-toggle-label">Exibir reservas técnicas</span>
+          <span class="toggle-switch"><input type="checkbox" id="cabo-reservas"><span class="toggle-track"></span></span>
+        </label>
+
+        <div class="filter-group">
+          <label for="cabo-tipo">Tipo de cabo</label>
+          <input type="text" id="cabo-tipo" class="filter-input" placeholder="Buscar tipo de cabo..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="cabo-padrao">Padrão do cabo</label>
+          <select id="cabo-padrao">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cabo-fibras">Nº de fibras</label>
+          <select id="cabo-fibras">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="cabo-fabricante">Fabricante</label>
+          <input type="text" id="cabo-fabricante" class="filter-input" placeholder="Buscar fabricante..." />
+        </div>
+
+        <div class="filter-group">
+          <label for="cabo-modelo">Modelo</label>
+          <input type="text" id="cabo-modelo" class="filter-input" placeholder="Buscar modelo..." />
+        </div>
+
+        <button id="btn-clear-cabo-filters" class="btn btn-secondary">✕ Limpar filtros</button>
+      </div>
+    </div>
+
+    <!-- TAB: ONUs -->
+    <div class="sidebar-panel" id="tab-onus">
+      <div class="sidebar-section">
+        <div class="panel-title">ONUs</div>
+
+        <label class="filter-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+          <span class="filter-toggle-label">Exibir ONUs conectadas a outros projetos</span>
+          <span class="toggle-switch"><input type="checkbox" id="onu-outros-projetos"><span class="toggle-track"></span></span>
+        </label>
+
+        <div class="filter-group">
+          <label for="onu-colorir">Colorir ONUs por</label>
+          <select id="onu-colorir">
+            <option value="potencia">Intervalo de potência</option>
+            <option value="status">Status de potência</option>
+            <option value="tipo">Tipo de ONU</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="onu-tipo">Tipo</label>
+          <select id="onu-tipo">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="onu-status-potencia">Status de potência</label>
+          <select id="onu-status-potencia">
+            <option value="">Todas</option>
+            <option value="regular">Regular</option>
+            <option value="irregular">Irregular</option>
+            <option value="indefinido">Indefinido</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="onu-potencia">Potência</label>
+          <select id="onu-potencia">
+            <option value="">Todas</option>
+            <option value="gt-10">Maior do que -10dB</option>
+            <option value="-11:-20">Entre -11dB e -20dB</option>
+            <option value="-21:-23">Entre -21dB e -23dB</option>
+            <option value="-24:-26">Entre -24dB e -26dB</option>
+            <option value="-27:-30">Entre -27dB e -30dB</option>
+            <option value="-31:-35">Entre -31dB e -35dB</option>
+            <option value="lt-36">Menor do que -36dB</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="onu-transmissor">Transmissor</label>
+          <input type="text" id="onu-transmissor" class="filter-input" placeholder="Buscar transmissor..." />
+        </div>
+
+        <button id="btn-clear-onu-filters" class="btn btn-secondary">✕ Limpar filtros</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Floating tab strip (IXC style) -->
+  <div class="sidebar-tabs">
+    <button class="sidebar-tab active" data-tab="global" title="Global">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+      </svg>
+    </button>
+    <button class="sidebar-tab" data-tab="logins" title="Logins">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </button>
+    <button class="sidebar-tab" data-tab="cto" title="Caixas de atendimento">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="3" y1="15" x2="21" y2="15"/>
+        <line x1="9" y1="3" x2="9" y2="21"/>
+        <line x1="15" y1="3" x2="15" y2="21"/>
+      </svg>
+    </button>
+    <button class="sidebar-tab" data-tab="cabos" title="Cabos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <path d="M4 20L20 4"/>
+        <path d="M15 4h5v5"/>
+        <path d="M4 12l4-4"/>
+        <path d="M12 20l4-4"/>
+      </svg>
+    </button>
+    <button class="sidebar-tab" data-tab="onus" title="ONUs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+        <rect x="2" y="6" width="20" height="12" rx="2"/>
+        <circle cx="7" cy="12" r="1.5" fill="currentColor"/>
+        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+        <line x1="17" y1="10" x2="20" y2="10"/>
+        <line x1="17" y1="14" x2="20" y2="14"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Search overlay -->
+  <div id="map-search-bar">
+    <div class="map-search-inner">
+      <span class="map-search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Buscar por nome, login, endereço..." autocomplete="off" />
+      <button id="btn-clear-search" class="map-search-clear hidden" title="Limpar busca">✕</button>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <span>Carregando dados...</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

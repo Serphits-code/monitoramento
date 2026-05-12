@@ -1,0 +1,622 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────── */
+#sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: #1a1d23;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  padding: 16px;
+  background: #12141a;
+  border-bottom: 1px solid #2a2d35;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sidebar-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.header-actions a {
+  color: #75b7ff;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.header-actions a:hover {
+  text-decoration: underline;
+}
+
+.sidebar-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid #2a2d35;
+}
+
+.sidebar-section label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-section h3 {
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Multi-select projetos */
+.multiselect {
+  position: relative;
+  width: 100%;
+}
+
+.multiselect-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 6px;
+  background: #2a2d35;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  min-height: 34px;
+  cursor: text;
+  align-items: center;
+}
+
+.multiselect-tags:focus-within {
+  border-color: #3498db;
+}
+
+.multiselect-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #3498db;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiselect-tag .tag-remove {
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.multiselect-tag .tag-remove:hover {
+  opacity: 1;
+}
+
+.multiselect-input {
+  flex: 1;
+  min-width: 60px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e0e0e0;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.multiselect-input::placeholder {
+  color: #666;
+}
+
+.multiselect-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2a2d35;
+  border: 1px solid #3a3d45;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1100;
+}
+
+.multiselect-dropdown.hidden {
+  display: none;
+}
+
+.multiselect-option {
+  padding: 7px 10px;
+  font-size: 12px;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.multiselect-option:hover,
+.multiselect-option.highlighted {
+  background: #3498db;
+  color: #fff;
+}
+
+.multiselect-option.selected {
+  color: #888;
+}
+
+.multiselect-option-all {
+  border-bottom: 1px solid #3a3d45;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+/* Layer groups */
+.layer-group {
+  margin-bottom: 12px;
+}
+
+.layer-group h4 {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.layer-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: #ccc;
+  cursor: pointer;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.layer-toggle .layer-name {
+  flex: 1;
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.3;
+}
+
+/* Hide the real checkbox */
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: #3a3d45;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #888;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: #1a4d6b;
+}
+
+.toggle-switch input:checked + .toggle-track::after {
+  transform: translateX(16px);
+  background: #3498db;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  background: #3498db;
+  color: #fff;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #2980b9;
+}
+
+.btn-secondary {
+  background: #2a2d35;
+  color: #aaa;
+}
+
+.btn-secondary:hover {
+  background: #3a3d45;
+}
+
+/* ─── Floating vertical tab strip (IXC style) ─────────── */
+.sidebar-tabs {
+  position: fixed;
+  left: 286px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1100;
+  pointer-events: all;
+}
+
+.sidebar-tab {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid #b0c4d8;
+  background: #fff;
+  color: #6a8fa8;
+  cursor: pointer;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+.sidebar-tab:hover {
+  background: #e8f4fd;
+  color: #2980b9;
+  border-color: #7ab5d6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.sidebar-tab.active {
+  background: #14536d;
+  color: #fff;
+  border-color: #14536d;
+  box-shadow: 0 2px 8px rgba(20,83,109,0.35);
+}
+
+.sidebar-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-panel.active {
+  display: flex;
+}
+
+/* ─── Map search overlay ──────────────────────────────── */
+#map-search-bar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(calc(-50% + 140px)); /* 140px = half of sidebar 280px */
+  z-index: 1500;
+  pointer-events: none;
+}
+
+.map-search-inner {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  padding: 0 14px;
+  height: 40px;
+  min-width: 340px;
+  max-width: 480px;
+  pointer-events: all;
+  border: 1px solid rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s;
+}
+
+.map-search-inner:focus-within {
+  box-shadow: 0 4px 18px rgba(52,152,219,0.35);
+  border-color: #3498db;
+}
+
+.map-search-icon {
+  font-size: 15px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+#search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #222;
+  background: transparent;
+  min-width: 0;
+}
+
+#search-input::placeholder {
+  color: #aaa;
+}
+
+.map-search-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+  padding: 0 0 0 6px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.map-search-clear:hover {
+  color: #e74c3c;
+}
+
+.map-search-clear.hidden {
+  display: none;
+}
+
+/* Filter groups */
+.filter-group {
+  margin-bottom: 10px;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 7px 10px;
+  background: #2a2d35;
+  color: #e0e0e0;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.filter-active {
+  border-color: #3498db !important;
+  background: #1a2a3a !important;
+}
+
+/* Panel title */
+.panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2a2d35;
+}
+
+/* Filter toggle row */
+.filter-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: #ccc;
+  cursor: pointer;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  border-bottom: 1px solid #2a2d35;
+}
+
+.filter-toggle svg {
+  flex-shrink: 0;
+  color: #888;
+}
+
+.filter-toggle-label {
+  flex: 1;
+  font-size: 12px;
+  color: #bbb;
+  line-height: 1.4;
+}
+
+/* Filter text input */
+.filter-input {
+  width: 100%;
+  padding: 7px 10px;
+  background: #2a2d35;
+  color: #e0e0e0;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.filter-input::placeholder {
+  color: #666;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Status */
+.status-bar {
+  font-size: 12px;
+  color: #888;
+  padding: 4px 0;
+}
+
+/* ─── Map ──────────────────────────────────────────────── */
+#map {
+  flex: 1;
+  height: 100vh;
+}
+
+/* ─── Loading overlay ──────────────────────────────────── */
+.loading {
+  position: fixed;
+  top: 0;
+  left: 280px; /* sidebar */
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 2000;
+  color: #fff;
+  font-size: 16px;
+}
+
+.loading.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Leaflet popup overrides ──────────────────────────── */
+.cto-label {
+  background: rgba(0,0,0,0.7) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.cto-label::before {
+  border-right-color: rgba(0,0,0,0.7) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.popup-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.popup-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+}
+
+.popup-table td:first-child {
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* ─── Cable direction arrows ───────────────────────────── */
+.cabo-arrow {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none;
+}
+
+/* ─── Responsive ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  #sidebar {
+    width: 240px;
+    min-width: 240px;
+  }
+
+  .loading {
+    left: 240px;
+  }
+}

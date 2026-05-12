@@ -42,18 +42,18 @@ class MainActivity : Activity() {
         serverInput = EditText(this).apply {
             hint = "http://IP_DA_VPS:3000"
             setText(prefs.serverUrl)
-            singleLine()
+            setSingleLine(true)
         }
         tokenInput = EditText(this).apply {
             hint = "Token GPS"
             setText(prefs.gpsToken)
-            singleLine()
+            setSingleLine(true)
         }
         tecnicoInput = EditText(this).apply {
             hint = "ID do tecnico"
             setText(prefs.technicianId.toString())
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
-            singleLine()
+            setSingleLine(true)
         }
         statusView = TextView(this).apply { textSize = 14f }
 
